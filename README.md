@@ -9,9 +9,8 @@ slightly better than compiling, depending on what one believes about JIT.
 The most sophysticated data structure I am likely to need is an array of
 numbers, so I cannot eliminate any languages based on that criteria.
 
-The backtracking problem is "embarrassingly parallelizable", so
-having a language that supports something like thread pools "out of the box"
-would be desirable.
+While it would be nice to parallelize, I don't exactly see how to parallelize
+the backtracking algorithm effectively.
 
 Finally, all other things being equal, it would be nice to use a language I
 have already used in the past.
