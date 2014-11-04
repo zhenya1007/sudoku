@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "sudoku.h"
+#include "sudoku_private.h"
 
 using std::array;
 using std::iterator;
@@ -27,38 +28,28 @@ typedef int row;
 typedef int column;
 typedef int region;
 
-class row_iterator : public iterator<forward_iterator_tag, int> {
-  board& b;
-  int i;
-public:
-  row_iterator(board& bb, row r) : b(bb), i(size*r) {}
-  row_iterator(row_iterator const& ri) : b(ri.b), i(ri.i) {}
-  row_iterator& operator++() {++i; return *this;}
-  row_iterator operator++(int) {row_iterator t(*this); operator++(); return t;}
-  bool operator==(const row_iterator& ri) {return b == ri.b && i == ri.i;}
-  bool operator!=(const row_iterator& ri) {return b != ri.b || i != ri.i;}
-  int& operator*() {return b[i];}
-};
+row_iterator::row_iterator(board& bb, row r) : b(bb), i(size*r) {}
+row_iterator::row_iterator(row_iterator const& ri) : b(ri.b), i(ri.i) {}
+row_iterator& row_iterator::operator++() {++i; return *this;}
+row_iterator row_iterator::operator++(int) {row_iterator t(*this); operator++(); return t;}
+bool row_iterator::operator==(const row_iterator& ri) {return b == ri.b && i == ri.i;}
+bool row_iterator::operator!=(const row_iterator& ri) {return b != ri.b || i != ri.i;}
+int& row_iterator::operator*() {return b[i];}
 
 row_iterator row_begin(board& b, row r) {return row_iterator(b, r);}
 row_iterator row_end(board& b, row r) {return row_iterator(b, r+1);}
 
-class column_iterator : public iterator<forward_iterator_tag, int> {
-  board& b;
-  int i;
-public:
-  column_iterator(board& bb, column c) : b(bb), i(c) {}
-  column_iterator(const column_iterator& ci) : b(ci.b), i(ci.i) {}
-  column_iterator& operator++() {
-    i += size;
-    if (max_index + size == i) i = 0;
-    if (max_index != i) i %= max_index;
-    return *this;}
-  column_iterator operator++(int) {column_iterator t(*this); operator++(); return t;}
-  bool operator==(const column_iterator& ci) {return b == ci.b && i == ci.i;}
-  bool operator!=(const column_iterator& ci) {return b != ci.b || i != ci.i;}
-  int& operator*() {return b[i];}
-};
+column_iterator::column_iterator(board& bb, column c) : b(bb), i(c) {}
+column_iterator::column_iterator(const column_iterator& ci) : b(ci.b), i(ci.i) {}
+column_iterator& column_iterator::operator++() {
+  i += size;
+  if (max_index + size == i) i = 0;
+  if (max_index != i) i %= max_index;
+  return *this;}
+column_iterator column_iterator::operator++(int) {column_iterator t(*this); operator++(); return t;}
+bool column_iterator::operator==(const column_iterator& ci) {return b == ci.b && i == ci.i;}
+bool column_iterator::operator!=(const column_iterator& ci) {return b != ci.b || i != ci.i;}
+int& column_iterator::operator*() {return b[i];}
 
 column_iterator column_begin(board& b, column c) {return column_iterator(b, c);}
 column_iterator column_end(board& b, column c) {return column_iterator(b, (c+1) % size);}
@@ -67,20 +58,15 @@ column_iterator column_end(board& b, column c) {return column_iterator(b, (c+1) 
 int to_div(int i, int k) {return k * (i/k);}
 int ignore_sign(int i) { if (i < 0) return -i; else return i;}
 
-class region_iterator : public iterator<forward_iterator_tag, int> {
-  board& b;
-  int i;
-public:
-  region_iterator(board& bb, row r, column c) : b(bb), i(size*to_div(r, regn) + to_div(c, regn)) {}
-  region_iterator(const region_iterator& ri) : b(ri.b), i(ri.i) {}
-  region_iterator& operator++() {++i; 
-    if (0 == i % regn) i += (size - regn);
-    return *this;}
-  region_iterator operator++(int) {region_iterator t(*this); operator++(); return t;}
-  bool operator==(const region_iterator& ci) {return b == ci.b && i == ci.i;}
-  bool operator!=(const region_iterator& ci) {return b != ci.b || i != ci.i;}
-  int& operator*() {return b[i];}
-};
+region_iterator::region_iterator(board& bb, row r, column c) : b(bb), i(size*to_div(r, regn) + to_div(c, regn)) {}
+region_iterator::region_iterator(const region_iterator& ri) : b(ri.b), i(ri.i) {}
+region_iterator& region_iterator::operator++() {++i; 
+  if (0 == i % regn) i += (size - regn);
+  return *this;}
+region_iterator region_iterator::operator++(int) {region_iterator t(*this); operator++(); return t;}
+bool region_iterator::operator==(const region_iterator& ci) {return b == ci.b && i == ci.i;}
+bool region_iterator::operator!=(const region_iterator& ci) {return b != ci.b || i != ci.i;}
+int& region_iterator::operator*() {return b[i];}
 
 region_iterator region_begin(board& b, row r, column c) {
   return region_iterator(b, r, c);

@@ -59,8 +59,7 @@ region_iterator region_end(board& b, region r);
 
 int ignore_sign(int i);
 
-std::array<int, 10>::iterator 
-available_numbers(region_iterator b, region_iterator e, std::array<int, 10>& a);
+int available_numbers(region_iterator b, region_iterator e, std::array<int, 10>& a);
 
 
 #endif

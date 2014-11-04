@@ -24,9 +24,9 @@ int main(int argc, char* argv[]) {
   array<int, 10> nums;
   region_iterator rb = region_begin(b, 5);
   region_iterator re = region_end(b, 5);
-  array<int, 10>::iterator nums_end = available_numbers(rb, re, nums);
+  int available = available_numbers(rb, re, nums);
   cout << "should see odd numbers in the interval [1, 9] below:" << endl;
-  for (array<int, 10>::iterator p = nums.begin(); p != nums_end; ++p)
+  for (array<int, 10>::iterator p = nums.begin(); p != nums.begin() + available; ++p)
     cout << *p << ", ";
   cout << endl;
   return 0;
