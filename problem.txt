@@ -1,0 +1,61 @@
+Dear Evgeny,
+
+We were impressed with your application to the Insight Data Engineering Fellows Program and would like to invite you to participate in the next round of the Fellow selection process: the coding challenge.
+
+The coding challenge instructions are listed at the bottom of this email. They are fairly open-ended so as to allow you to showcase your creative and coding abilities without being too constraining. We are looking for Fellows who will impress us by writing clean <http://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882/> code <http://www.amazon.com/The-Pragmatic-Programmer-Journeyman-Master/dp/020161622X/>, and who makes good technical trade-offs while delivering a great user experience.
+
+Please submit your code to us no later than Monday, November 3rd at 11pm PT. To submit your entry please use the following form:
+
+https://insightdata.wufoo.com/forms/insight-data-engineering-code-challenge/
+
+On that form, the preferred method of submission is a link to your code on GitHub, though we can also accept a .zip file containing the code.
+
+Please note: we are unable to accept coding challenges that are emailed to us.
+
+After receiving the code, we will review it the following week and then send out invitations for a 30 min Skype interview to select candidates. If you are selected, we will begin interviewing around November 17th. We will then give decisions on acceptance to the program by late November.
+
+In lieu of the coding challenge below, if you have previously completed a coding project that you are especially proud of, you may submit a link to the Github repository with complete documentation in Markdown format.
+
+If at any point in the process you have any questions or have any concerns regarding the timeline outlined above, please feel free to email info@insightdataengineering.com at anytime.
+
+Here is the coding challenge:
+
+--------------
+
+Insight Data Engineering Fellows Program - Coding Challenge
+
+We'd like you to implement a Sudoku <http://www.sudoku.name/rules/en> puzzle solver in one of the following programming languages: Java, Clojure, Scala, C, C++, Python, or Ruby. It should input a CSV file consisting of an unsolved Sudoku with 0 representing blanks, and output a CSV file with the solved Sudoku. For instance, the input CSV file can look like the following:
+
+0,3,5,2,9,0,8,6,4
+0,8,2,4,1,0,7,0,3
+7,6,4,3,8,0,0,9,0
+2,1,8,7,3,9,0,4,0
+0,0,0,8,0,4,2,3,0
+0,4,3,0,5,2,9,7,0
+4,0,6,5,7,1,0,0,9
+3,5,9,0,2,8,4,1,7
+8,0,0,9,0,0,5,2,6
+
+The output should be:
+
+1,3,5,2,9,7,8,6,4
+9,8,2,4,1,6,7,5,3
+7,6,4,3,8,5,1,9,2
+2,1,8,7,3,9,6,4,5
+5,9,7,8,6,4,2,3,1
+6,4,3,1,5,2,9,7,8
+4,2,6,5,7,1,3,8,9
+3,5,9,6,2,8,4,1,7
+8,7,1,9,4,3,5,2,6
+
+Any additional game play features are optional, but welcome.
+
+--------------
+
+
+Thanks and good luck,
+
+John
+---
+John Joo
+Program Director, Insight

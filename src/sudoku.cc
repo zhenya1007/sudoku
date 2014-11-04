@@ -3,16 +3,12 @@
 #include <iterator>
 #include <tuple>
 
+#include "sudoku.hh"
+
 using std::array;
 using std::iterator;
 using std::forward_iterator_tag;
 
-const int regn = 3;
-const int size = 9;
-const int count = size * size;
-const int index_max = count - 1;
-
-typedef array<int, count> board;
 typedef int row;
 typedef int column;
 typedef int region;
@@ -49,7 +45,8 @@ public:
 column_iterator column_begin(board& b, column c) {return column_iterator(b, c);}
 column_iterator column_end(board& b, column c) {return column_iterator(b, c+1);}
 
-int to_div(int i, int k) {return k * (i/k)}
+// the multiple of k that is less than i
+int to_div(int i, int k) {return k * (i/k)} 
 
 class region_iterator : public iterator<forward_iterator_tag, int> {
   board& b;
@@ -66,18 +63,35 @@ public:
   int& operator*() {return b[i];}
 };
 
-region_iterator region_begin(board& b, row r, column c) {return region_iterator(b, r, c);}
-region_iterator region_end(board& b, row r, column c) {return region_iterator(b, to_div(r,regn)+regn, c);}
+region_iterator region_begin(board& b, row r, column c) {
+  return region_iterator(b, r, c);
+}
 
-tuple<row, column> start_of_region(region r) {return make_tuple(to_div(r, regn), regn * (r % regn));}
+region_iterator region_end(board& b, row r, column c) {
+  return region_iterator(b, to_div(r,regn)+regn, c);
+}
+
+tuple<row, column> start_of_region(region r) {
+  return make_tuple(to_div(r, regn), regn * (r % regn));
+}
+
+region_iterator region_begin(board& b, region r) {
+  tuple<row, column> t = start_of_region(r);
+  return region_begin(b, get<0>(t), get<1>(t));
+}
+
+region_iterator region_end(board& b, region r) {
+  tuple<row, column> t = start_of_region(r);
+  return region_end(b, get<0>(t), get<1>(t));
+}
 
 tuple<column, column> region_columns(region r) {
-  tuple<row, column>t = start_of_region(r);
+  tuple<row, column> t = start_of_region(r);
   return make_tuple(get<1>(t), get<1>(t) + regn - 1);
 }
 
 tuple<row, row> region_rows(region r) {
-  tuple<row, column>t = start_of_region(r);
+  tuple<row, column> t = start_of_region(r);
   return make_tuple(get<0>(t), get<0>(t) + regn - 1);
 }
 
@@ -110,3 +124,62 @@ fill_region(region_iterator& rb, region_iterator& re, NumIter& b) {
       *rb = -*b++;
 }
 
+class Region {
+  board& b;
+  region r;
+  array<int, 10> nums;
+  array<int, 10>::iterator nums_end;
+public:
+  Region(board& bb, region rr} 
+  : b(bb), r(rr), nums_end(available_numbers(region_begin(bb, rr), region_end(bb, rr), nums)) {}
+  Region(const Region& rr) : b(rr.b), r(rr.r), nums(rr.nums), nums_end(rr.nums_end) {}
+  region region_number() const {return r;}
+  bool next() {
+    while (true) {
+      fill_region(region_begin(b, r), region_end(b, r), nums.begin()); // todo: this is std::copy
+      if (is_valid(region_begin(b, r), region_end(b, r))
+        return true;
+      if (!next_permutation(nums.begin(), nums_end))
+        return false;
+    }
+  }
+};
+
+tuple<tuple<row,row>, tuple<column,column>>
+affected_area(const array<Region, 9> a, int k) {
+  row max_row = 0, min_row = 8;
+  column max_col = 0, min_col = 8;
+  for (int i=0; i < k; ++i) {
+    tuple<row,row> t = region_rows(a[i].region_number());
+    max_row = max(get<1>(t), max_row);
+    min_row = min(get<0>(t), min_row);
+    tuple<column,column> t = region_columns(a[i].region_number());
+    max_col = max(get<1>(t), max_col);
+    min_col = min(get<0>(t), min_col);
+  }
+  return make_tuple(make_tuple(min_row,max_row), make_tuple(min_col, max_col));
+}
+
+bool area_valid(board& b, tuple<row,row>, tuple<column,column>> t) {
+  tuple <row, row> rows = get<0>(t);
+  tuple <column, column> columns = get<1>(t);
+  for (row r = get<0>(rows); r <= get<1>(rows); ++r)
+    if (!is_valid(row_begin(b, r), row_end(b, r)))
+      return false;
+  for (column c = get<0>(columns); c <= get<1>(columns); ++c)
+    if (is_valid(column_begin(b, c), column_end(b, c)))
+      return false;
+  return true;
+}
+
+bool solve(board& b) {
+  array<Region, 9> a;
+  for (int i = 0; i < 9; ++i) a[i] = Region(b, i);
+  int k = 0;
+  while (true) {
+    if (k < 0) return false;
+    if (8 < k) return true;
+    if (!a[k].next()) --k;
+    if area_valid(affected_area(a, k)) ++k;
+  }
+}
