@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "sudoku.hh"
-#include "io.hh"
+#include "sudoku.h"
+#include "io.h"
 
 using std::cerr;
-usinng std::endl;
+using std::endl;
 
 int main(int argc, char** argv) {
   board b;
