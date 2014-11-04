@@ -169,10 +169,7 @@ public:
     fill_region(region_begin(b, r), region_end(b, r), nums.begin());
   }  
   bool next() {
-    if (!next_permutation(nums.begin(), nums.begin() + available))
-      return false;
-    else
-      return true;
+    return next_permutation(nums.begin(), nums.begin() + available);
   }
 };
 
@@ -220,7 +217,10 @@ bool solve(board& b) {
     if (a[k].next())
       continue;
     --k;
-    if (0 <= k)
+    if (0 < k) {
       a[k].next();
+    }
+    if (0 == k && !a[k].next())
+      return false;
   }
 }
