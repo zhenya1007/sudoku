@@ -214,13 +214,14 @@ bool solve(board& b) {
        ++k;
        continue;
     }
-    if (a[k].next())
+    if (a[k].next()) // do we have more options at the current level?
       continue;
-    --k;
-    if (0 < k) {
-      a[k].next();
-    }
-    if (0 == k && !a[k].next())
+    while (0 < --k)  // backtrack to the level that has untried options
+      if (a[k].next())
+        break;
+    if (0 < k)
+      continue;
+    if (!a[k].next())
       return false;
   }
 }
