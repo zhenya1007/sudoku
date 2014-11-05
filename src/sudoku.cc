@@ -153,7 +153,11 @@ public:
   region region_number() const {return r;}
   void fill() {
     fill_region(region_begin(b, r), region_end(b, r), nums.begin());
-  }  
+  }
+  void empty() {
+    array<int, 10> z = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    fill_region(region_begin(b, r), region_end(b, r), z.begin());
+  }
   bool next() {
     return next_permutation(nums.begin(), nums.begin() + available);
   }
@@ -178,13 +182,11 @@ bool area_valid(board& b, tuple<tuple<row,row>, tuple<column,column>> t) {
   tuple <row, row> rows = get<0>(t);
   tuple <column, column> columns = get<1>(t);
   for (row r = get<0>(rows); r <= get<1>(rows); ++r)
-    if (!is_valid(row_begin(b, r), row_end(b, r))) {
+    if (!is_valid(row_begin(b, r), row_end(b, r)))
       return false;
-    }
   for (column c = get<0>(columns); c <= get<1>(columns); ++c)
-    if (!is_valid(column_begin(b, c), column_end(b, c))) {
+    if (!is_valid(column_begin(b, c), column_end(b, c)))
       return false;      
-    }
   return true;
 }
 
@@ -202,9 +204,12 @@ bool solve(board& b) {
     }
     if (a[k].next()) // do we have more options at the current level?
       continue;
+    a[k].empty();
     while (0 < --k)  // backtrack to the level that has untried options
       if (a[k].next())
         break;
+      else
+        a[k].empty();
     if (0 < k)
       continue;
     if (!a[k].next())
