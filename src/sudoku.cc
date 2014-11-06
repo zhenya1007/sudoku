@@ -23,6 +23,8 @@ using std::min;
 using std::remove;
 using std::vector;
 using std::endl;
+using std::sort;
+using std::copy;
 
 typedef int row;
 typedef int column;
@@ -150,7 +152,15 @@ public:
   Region(board& bb, region rr)
   : b(bb), r(rr), available(available_numbers(region_begin(bb, rr), region_end(bb, rr), nums)) {}
   Region(const Region& rr) : b(rr.b), r(rr.r), nums(rr.nums), available(rr.available) {}
+  Region& operator=(const Region& rr) {
+    if (&rr != this) {
+      b = rr.b; r = rr.r; available = rr.available;
+      copy(rr.nums.begin(), rr.nums.end(), nums.begin());
+    }
+    return *this;
+  }
   region region_number() const {return r;}
+  int empty_cells() const {return available;}
   void fill() {
     fill_region(region_begin(b, r), region_end(b, r), nums.begin());
   }
@@ -190,9 +200,14 @@ bool area_valid(board& b, tuple<tuple<row,row>, tuple<column,column>> t) {
   return true;
 }
 
+bool fewer_empty_cells(Region const& r1, Region const& r2) {
+  return r1.empty_cells() < r2.empty_cells();
+}
+
 bool solve(board& b) {
   vector<Region> a;
   for (int i = 0; i < 9; ++i) a.push_back(Region(b, i));
+  sort(a.begin(), a.end(), fewer_empty_cells);
   int k = 0;
   while (true) {
     if (k < 0) return false;
